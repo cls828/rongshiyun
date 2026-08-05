@@ -1,0 +1,22 @@
+name: Upload IPA to App Store Connect
+
+on:
+  workflow_dispatch:
+    inputs:
+      filename:
+        description: 'IPA文件名'
+        required: true
+        default: 'rongshiyun.ipa'
+
+jobs:
+  upload:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Upload to App Store Connect
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APP_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
+        run: |
+          xcrun altool --upload-app -f "${{ github.event.inputs.filename }}" -t ios -u "$APPLE_ID" -p "$APP_SPECIFIC_PASSWORD"
